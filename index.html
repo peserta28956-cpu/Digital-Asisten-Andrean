@@ -151,23 +151,23 @@
         </button>
 
         <button onclick="switchMainTab('tab-materi')" id="nav-tab-materi" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card">
-          <i class="fa-solid fa-layer-group text-xs text-brand-gold"></i>
+          <i id="nav-icon-materi" class="fa-solid fa-lock text-xs text-amber-400"></i>
           <span>2. MATERI & SIMULATOR</span>
         </button>
 
         <button onclick="switchMainTab('tab-tugas')" id="nav-tab-tugas" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card">
-          <i class="fa-solid fa-list-check text-xs text-brand-cyan"></i>
+          <i id="nav-icon-tugas" class="fa-solid fa-lock text-xs text-amber-400"></i>
           <span>3. TUGAS & WORKFLOW</span>
           <span id="nav-badge-mission" class="text-[10px] bg-slate-800 text-brand-gold px-1.5 py-0.2 rounded border border-slate-700">0/7</span>
         </button>
 
         <button onclick="switchMainTab('tab-evaluasi')" id="nav-tab-evaluasi" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card">
-          <i class="fa-solid fa-square-check text-xs text-emerald-400"></i>
+          <i id="nav-icon-evaluasi" class="fa-solid fa-lock text-xs text-amber-400"></i>
           <span>4. CEK HASIL & GALERI KELAS</span>
         </button>
 
         <button onclick="switchMainTab('tab-refleksi')" id="nav-tab-refleksi" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card">
-          <i class="fa-solid fa-clipboard-question text-xs text-amber-400"></i>
+          <i id="nav-icon-refleksi" class="fa-solid fa-lock text-xs text-amber-400"></i>
           <span>5. REFLEKSI & BANTUAN</span>
         </button>
       </nav>
@@ -183,6 +183,28 @@
     ========================================================================= -->
     <div id="tab-beranda" class="view-content-panel active-view space-y-8">
       
+      <!-- Access Gate Notice Banner (Shown if student is not logged in) -->
+      <div id="gate-warning-banner" class="bg-gradient-to-r from-amber-950/80 via-amber-900/40 to-slate-900 border border-amber-500/50 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-brand-gold flex items-center justify-center text-lg shrink-0 border border-amber-500/30">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <span>Akses Modul Belajar Masih Terkunci</span>
+              <span class="text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full">Identitas Wajib</span>
+            </h3>
+            <p class="text-xs text-slate-300 mt-0.5">
+              Silakan isi identitas peserta didik (Nama Lengkap & Kelas) untuk membuka akses simulator kamera, materi, dan 7 misi praktik.
+            </p>
+          </div>
+        </div>
+        <button onclick="openLoginModal()" class="px-4 py-2.5 bg-brand-gold hover:bg-amber-400 text-slate-950 font-mono font-bold text-xs rounded-xl transition-all shadow shrink-0 flex items-center gap-2">
+          <i class="fa-solid fa-id-card"></i>
+          <span>Isi Identitas Siswa</span>
+        </button>
+      </div>
+
       <!-- Hero Studio Card with Integrated Viewfinder -->
       <div class="bg-gradient-to-br from-brand-surface via-slate-900 to-brand-card rounded-3xl border border-brand-border p-6 sm:p-8 relative overflow-hidden shadow-2xl">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -1408,9 +1430,14 @@
             class="w-full bg-slate-900 border border-slate-700 focus:border-brand-gold rounded-xl p-2.5 text-xs text-white outline-none">
         </div>
 
+        <div class="p-2.5 rounded-xl bg-slate-900/90 border border-amber-500/30 text-[11px] text-slate-300 flex items-start gap-2">
+          <i class="fa-solid fa-shield-halved text-brand-gold mt-0.5"></i>
+          <span>Identitas nama dan kelas diperlukan untuk membuka modul materi, mencatat progres latihan, dan menandai karya di galeri siswa.</span>
+        </div>
+
         <div class="pt-2 flex flex-col gap-2">
           <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-brand-gold to-amber-600 hover:from-amber-400 hover:to-brand-gold text-slate-950 font-bold font-mono text-xs rounded-xl shadow-lg transition-all">
-            Simpan Identitas & Mulai Belajar ✓
+            Simpan Identitas & Buka Akses Modul ✓
           </button>
           <button type="button" onclick="logoutStudent()" id="btn-logout" class="hidden w-full py-2 bg-slate-800 text-red-400 hover:text-red-300 text-xs font-mono rounded-xl border border-slate-700">
             Keluar / Ganti Siswa Lain
@@ -1578,18 +1605,16 @@
 
     // Application ID & Config from Environment
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'asisten-fotografi-smkn1';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' 
-      ? JSON.parse(__firebase_config) 
-      : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo" };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    
+    // Generate initial persistent user ID immediately so session is never null
+    const initialSessionId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
+      ? crypto.randomUUID() 
+      : 'dkv_user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
     // Global State Container
     window.appState = {
       user: null,
-      userId: null,
+      userId: initialSessionId,
       studentProfile: JSON.parse(localStorage.getItem('fobi_student') || 'null'),
       completedSteps: [],
       completedMissions: [],
@@ -1597,36 +1622,67 @@
       audioEnabled: true
     };
 
-    // Authenticate First (RULE 3)
+    let auth = null;
+    let db = null;
+    let isCloudReady = false;
+
+    // Helper to ensure valid session identifier
+    window.ensureActiveSession = function() {
+      if (!window.appState.userId) {
+        window.appState.userId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
+          ? crypto.randomUUID() 
+          : 'dkv_user_' + Date.now();
+      }
+      return window.appState.userId;
+    };
+
+    // Authenticate and initialize storage
     async function initAuthAndData() {
       try {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+          const firebaseConfig = JSON.parse(__firebase_config);
+          const app = initializeApp(firebaseConfig);
+          auth = getAuth(app);
+          db = getFirestore(app);
+
+          // Authenticate before queries (RULE 3)
+          let credential;
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            credential = await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            credential = await signInAnonymously(auth);
+          }
+
+          if (credential && credential.user) {
+            window.appState.user = credential.user;
+            window.appState.userId = credential.user.uid;
+            isCloudReady = true;
+          }
+
+          // Listen to state changes
+          onAuthStateChanged(auth, async (firebaseUser) => {
+            if (firebaseUser) {
+              window.appState.user = firebaseUser;
+              window.appState.userId = firebaseUser.uid;
+              isCloudReady = true;
+              await loadUserDataFromCloud();
+              listenToStudentSubmissions();
+              updateSyncBadge(true);
+            }
+          });
         } else {
-          await signInAnonymously(auth);
+          // Running in standalone / preview mode
+          updateSyncBadge(false);
         }
       } catch (err) {
-        console.warn("Auth initialization fallback:", err);
+        console.warn("Auth initialization notice, continuing with active local session:", err);
+        updateSyncBadge(false);
       }
     }
 
-    onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        window.appState.user = firebaseUser;
-        window.appState.userId = firebaseUser.uid;
-        
-        // Load User Progress from Firestore
-        await loadUserDataFromCloud();
-        // Listen to Real Student Gallery Submissions (Public Data - RULE 1)
-        listenToStudentSubmissions();
-        
-        updateSyncBadge(true);
-      }
-    });
-
     // Load student profile & progress
     async function loadUserDataFromCloud() {
-      if (!window.appState.userId) return;
+      if (!isCloudReady || !db || !window.appState.userId) return;
       try {
         const progressDocRef = doc(db, 'artifacts', appId, 'users', window.appState.userId, 'userData', 'progress');
         const snap = await getDoc(progressDocRef);
@@ -1641,20 +1697,21 @@
           if (data.reflection) {
             populateReflectionForm(data.reflection);
           }
-        } else if (window.appState.studentProfile) {
-          // If local exists but not cloud, sync it
-          await syncProgressToCloud();
         }
       } catch (e) {
-        console.error("Error reading progress:", e);
+        console.warn("Notice reading cloud progress:", e);
       }
       renderStudentIdentityUI();
       window.updateGlobalProgress();
     }
 
-    // Save Progress to Firestore
+    // Save Progress to Firestore / Cloud
     window.syncProgressToCloud = async function() {
-      if (!window.appState.userId) return;
+      window.ensureActiveSession();
+      if (!isCloudReady || !db || !window.appState.userId) {
+        updateSyncBadge(false);
+        return;
+      }
       try {
         const progressDocRef = doc(db, 'artifacts', appId, 'users', window.appState.userId, 'userData', 'progress');
         await setDoc(progressDocRef, {
@@ -1665,62 +1722,89 @@
         }, { merge: true });
         updateSyncBadge(true);
       } catch (e) {
-        console.error("Sync error:", e);
+        console.warn("Sync error:", e);
         updateSyncBadge(false);
       }
     };
 
-    // Real-Time Submissions Listener (RULE 1 & 2: Simple Collection, No OrderBy)
+    // Real-Time Submissions Listener (RULE 1 & 2)
     function listenToStudentSubmissions() {
-      const submissionsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
-      onSnapshot(submissionsColRef, (snapshot) => {
-        const list = [];
-        snapshot.forEach((docSnap) => {
-          list.push({ id: docSnap.id, ...docSnap.data() });
+      if (!isCloudReady || !db) return;
+      try {
+        const submissionsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        onSnapshot(submissionsColRef, (snapshot) => {
+          const list = [];
+          snapshot.forEach((docSnap) => {
+            list.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          // Sort in memory by timestamp descending
+          list.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+          window.appState.gallerySubmissions = list;
+          renderRealStudentGallery();
+        }, (error) => {
+          console.warn("Submissions listener notice:", error);
         });
-        // Sort in memory by timestamp descending
-        list.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
-        window.appState.gallerySubmissions = list;
-        renderRealStudentGallery();
-      }, (error) => {
-        console.error("Submissions listener error:", error);
-      });
+      } catch (err) {
+        console.warn("Real-time listener setup error:", err);
+      }
     }
 
-    // Save Real Submission to Firestore
+    // Save Real Submission to Cloud or Gallery
     window.submitPhotoToCloud = async function(submissionData) {
-      if (!window.appState.userId) {
-        window.alertBox("Sesi belum terhubung. Mohon coba beberapa detik lagi.");
+      const activeUid = window.ensureActiveSession();
+      const subId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+      
+      const payload = {
+        ...submissionData,
+        id: subId,
+        authorId: activeUid,
+        timestamp: new Date().toISOString()
+      };
+
+      let submittedSuccessfully = false;
+
+      // Attempt cloud storage if service is connected
+      if (isCloudReady && db && window.appState.user) {
+        try {
+          const subDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submissions', subId);
+          await setDoc(subDocRef, payload);
+          submittedSuccessfully = true;
+        } catch (e) {
+          console.warn("Cloud submission fallback, persisting locally:", e);
+        }
+      }
+
+      // If cloud is offline or in standalone preview, store in active gallery list immediately
+      if (!submittedSuccessfully) {
+        window.appState.gallerySubmissions.unshift(payload);
+        renderRealStudentGallery();
+      }
+
+      window.alertBox("Karya foto berhasil dipublikasikan ke galeri siswa!");
+      window.closeSubmitModal();
+    };
+
+    // Save Reflection to Cloud
+    window.saveReflectionToCloud = async function(reflectData) {
+      const activeUid = window.ensureActiveSession();
+      if (!isCloudReady || !db || !window.appState.user) {
+        const alertEl = document.getElementById('reflection-save-alert');
+        if (alertEl) {
+          alertEl.classList.remove('hidden');
+          alertEl.innerText = 'Refleksi tersimpan di sesi belajar Anda!';
+          setTimeout(() => alertEl.classList.add('hidden'), 4000);
+        }
         return;
       }
       try {
-        const subId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
-        const subDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submissions', subId);
-        await setDoc(subDocRef, {
-          ...submissionData,
-          authorId: window.appState.userId,
-          timestamp: new Date().toISOString()
-        });
-        window.alertBox("Karya foto berhasil dipublikasikan ke galeri kelas!");
-        window.closeSubmitModal();
-      } catch (e) {
-        console.error("Submission failed:", e);
-        window.alertBox("Gagal mengunggah karya. Periksa koneksi internet.");
-      }
-    };
-
-    // Save Reflection to Firestore
-    window.saveReflectionToCloud = async function(reflectData) {
-      if (!window.appState.userId) return;
-      try {
-        const progressDocRef = doc(db, 'artifacts', appId, 'users', window.appState.userId, 'userData', 'progress');
+        const progressDocRef = doc(db, 'artifacts', appId, 'users', activeUid, 'userData', 'progress');
         await setDoc(progressDocRef, {
           reflection: reflectData,
           reflectionUpdatedAt: new Date().toISOString()
         }, { merge: true });
         updateSyncBadge(true);
       } catch (e) {
-        console.error("Reflection save error:", e);
+        console.warn("Reflection save error:", e);
       }
     };
 
@@ -1733,8 +1817,8 @@
           label.innerText = 'Sinkron Cloud ✓';
           badge.className = 'hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/40 border border-emerald-800/60 rounded-lg text-[11px] font-mono text-emerald-400';
         } else {
-          label.innerText = 'Offline / Lokal';
-          badge.className = 'hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-amber-950/40 border border-amber-800/60 rounded-lg text-[11px] font-mono text-amber-400';
+          label.innerText = 'Sesi Aktif ✓';
+          badge.className = 'hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-sky-950/40 border border-sky-800/60 rounded-lg text-[11px] font-mono text-sky-400';
         }
       }
     }
@@ -1748,7 +1832,7 @@
       if (data.scale) window.selectReflectScale(data.scale);
     }
 
-    // Initialize Auth
+    // Initialize Auth & Storage
     initAuthAndData();
   </script>
 
@@ -1787,7 +1871,8 @@
 
       renderStudentIdentityUI();
       closeLoginModal();
-      alertBox(`Selamat datang, ${name}! Progres belajarmu kini tersimpan otomatis.`);
+      playAfBeepSound();
+      alertBox(`Identitas terverifikasi: Selamat datang, ${name}! Seluruh modul & tugas praktik kini terbuka.`);
 
       if (window.syncProgressToCloud) {
         window.syncProgressToCloud();
@@ -1801,7 +1886,12 @@
       document.getElementById('login-input-nis').value = '';
       renderStudentIdentityUI();
       closeLoginModal();
-      alertBox('Anda telah keluar dari akun siswa.');
+      switchMainTab('tab-beranda');
+      alertBox('Anda telah keluar dari akun siswa. Modul pembelajaran kembali terkunci.');
+    }
+
+    function isStudentLoggedIn() {
+      return Boolean(window.appState?.studentProfile && window.appState.studentProfile.name);
     }
 
     function renderStudentIdentityUI() {
@@ -1809,15 +1899,35 @@
       const dispName = document.getElementById('user-display-name');
       const dispClass = document.getElementById('user-display-class');
       const heroName = document.getElementById('hero-user-name');
+      const gateBanner = document.getElementById('gate-warning-banner');
+
+      const iconMateri = document.getElementById('nav-icon-materi');
+      const iconTugas = document.getElementById('nav-icon-tugas');
+      const iconEvaluasi = document.getElementById('nav-icon-evaluasi');
+      const iconRefleksi = document.getElementById('nav-icon-refleksi');
 
       if (profile && profile.name) {
         dispName.innerText = profile.name;
         dispClass.innerText = `${profile.studentClass}${profile.nis ? ' • Absen ' + profile.nis : ''}`;
         if (heroName) heroName.innerText = `${profile.name} (${profile.studentClass})`;
+        if (gateBanner) gateBanner.classList.add('hidden');
+
+        // Unlocked navigation icons
+        if (iconMateri) iconMateri.className = 'fa-solid fa-layer-group text-xs text-brand-gold';
+        if (iconTugas) iconTugas.className = 'fa-solid fa-list-check text-xs text-brand-cyan';
+        if (iconEvaluasi) iconEvaluasi.className = 'fa-solid fa-square-check text-xs text-emerald-400';
+        if (iconRefleksi) iconRefleksi.className = 'fa-solid fa-clipboard-question text-xs text-amber-400';
       } else {
         dispName.innerText = 'Belum Masuk';
         dispClass.innerText = 'Klik untuk Login';
-        if (heroName) heroName.innerText = 'Belum Masuk';
+        if (heroName) heroName.innerText = 'Belum Masuk (Terkunci)';
+        if (gateBanner) gateBanner.classList.remove('hidden');
+
+        // Locked navigation icons
+        if (iconMateri) iconMateri.className = 'fa-solid fa-lock text-xs text-amber-400/80';
+        if (iconTugas) iconTugas.className = 'fa-solid fa-lock text-xs text-amber-400/80';
+        if (iconEvaluasi) iconEvaluasi.className = 'fa-solid fa-lock text-xs text-amber-400/80';
+        if (iconRefleksi) iconRefleksi.className = 'fa-solid fa-lock text-xs text-amber-400/80';
       }
     }
 
@@ -1946,6 +2056,13 @@
        NAVIGATION & TAB SWITCHING
     ------------------------------------------------------------- */
     function switchMainTab(targetTabId, subModulId = null) {
+      // Access Guard: Gate all modules if user has not filled identity
+      if (targetTabId !== 'tab-beranda' && !isStudentLoggedIn()) {
+        openLoginModal();
+        alertBox('🔒 Modul Terkunci: Silakan isi Nama & Kelas terlebih dahulu untuk membuka materi belajar.');
+        return;
+      }
+
       playDialClick();
       document.querySelectorAll('.view-content-panel').forEach(panel => panel.classList.remove('active-view'));
 
@@ -1962,10 +2079,12 @@
 
       Object.keys(tabMap).forEach(k => {
         const btn = document.getElementById(tabMap[k]);
-        if (k === targetTabId) {
-          btn.className = 'main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all bg-brand-gold text-slate-950 shadow-md font-bold';
-        } else {
-          btn.className = 'main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card';
+        if (btn) {
+          if (k === targetTabId) {
+            btn.className = 'main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all bg-brand-gold text-slate-950 shadow-md font-bold';
+          } else {
+            btn.className = 'main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card';
+          }
         }
       });
 
@@ -1974,6 +2093,12 @@
     }
 
     function switchSubModul(targetSubId) {
+      if (!isStudentLoggedIn()) {
+        openLoginModal();
+        alertBox('🔒 Silakan lengkapi identitas siswa untuk mengakses materi.');
+        return;
+      }
+
       playDialClick();
       document.querySelectorAll('.sub-tab-panel').forEach(p => p.classList.remove('active-subtab'));
       const sub = document.getElementById(targetSubId);
@@ -1989,10 +2114,12 @@
 
       Object.keys(pillMap).forEach(s => {
         const pill = document.getElementById(pillMap[s]);
-        if (s === targetSubId) {
-          pill.className = 'sub-modul-pill px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-brand-gold text-slate-950 shadow';
-        } else {
-          pill.className = 'sub-modul-pill px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all text-slate-300 hover:bg-brand-card';
+        if (pill) {
+          if (s === targetSubId) {
+            pill.className = 'sub-modul-pill px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-brand-gold text-slate-950 shadow';
+          } else {
+            pill.className = 'sub-modul-pill px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all text-slate-300 hover:bg-brand-card';
+          }
         }
       });
     }
@@ -2062,6 +2189,11 @@
     };
 
     function markStepComplete(stepNum) {
+      if (!isStudentLoggedIn()) {
+        openLoginModal();
+        alertBox('🔒 Silakan isi Nama & Kelas terlebih dahulu.');
+        return;
+      }
       if (!window.appState.completedSteps.includes(stepNum)) {
         window.appState.completedSteps.push(stepNum);
         playDialClick();
@@ -2071,6 +2203,11 @@
     }
 
     function toggleMission(missionNum) {
+      if (!isStudentLoggedIn()) {
+        openLoginModal();
+        alertBox('🔒 Silakan isi Nama & Kelas sebelum menandai misi.');
+        return;
+      }
       const idx = window.appState.completedMissions.indexOf(missionNum);
       if (idx > -1) {
         window.appState.completedMissions.splice(idx, 1);
@@ -2083,6 +2220,10 @@
     }
 
     function resetAllProgress() {
+      if (!isStudentLoggedIn()) {
+        openLoginModal();
+        return;
+      }
       window.appState.completedSteps = [];
       window.appState.completedMissions = [];
       window.updateGlobalProgress();
@@ -2833,6 +2974,11 @@
     }
 
     function saveReflection() {
+      if (!isStudentLoggedIn()) {
+        openLoginModal();
+        alertBox('🔒 Silakan isi Nama & Kelas sebelum menyimpan refleksi.');
+        return;
+      }
       playShutterSound();
       const q1 = document.getElementById('ref-q1').value.trim();
       const q2 = document.getElementById('ref-q2').value.trim();

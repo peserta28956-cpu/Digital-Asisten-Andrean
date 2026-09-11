@@ -42,20 +42,10 @@
   </script>
 
   <style>
-    ::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #080C15;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #233252;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #F59E0B;
-    }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #080C15; }
+    ::-webkit-scrollbar-thumb { background: #233252; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #F59E0B; }
 
     .grid-rot-overlay {
       background-size: 33.333% 33.333%;
@@ -74,18 +64,9 @@
       animation: fadeInView 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .view-content-panel.active-view {
-      display: block;
-    }
-
-    .sub-tab-panel {
-      display: none;
-      animation: fadeInView 0.2s ease forwards;
-    }
-
-    .sub-tab-panel.active-subtab {
-      display: block;
-    }
+    .view-content-panel.active-view { display: block; }
+    .sub-tab-panel { display: none; animation: fadeInView 0.2s ease forwards; }
+    .sub-tab-panel.active-subtab { display: block; }
 
     @keyframes fadeInView {
       from { opacity: 0; transform: translateY(6px); }
@@ -96,14 +77,14 @@
 
 <body class="bg-brand-dark text-slate-200 font-sans min-h-screen flex flex-col selection:bg-brand-gold selection:text-black antialiased">
 
-  <!-- TOP STICKY APP HEADER & CATEGORY BAR -->
+  <!-- TOP STICKY APP HEADER -->
   <header class="sticky top-0 z-40 bg-brand-dark/95 backdrop-blur-lg border-b border-brand-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <!-- Upper Row: Logo, School Identity, Global Status & Tools -->
+      <!-- Upper Row: School Identity, Active Student Info & Utilities -->
       <div class="h-16 flex items-center justify-between gap-3 border-b border-brand-border/60">
         
-        <!-- Brand & School Logo -->
+        <!-- School Identity -->
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-gold to-amber-600 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-brand-gold/20">
             <i class="fa-solid fa-camera"></i>
@@ -117,21 +98,39 @@
           </div>
         </div>
 
-        <!-- Right Toolbelt: Progress Meter, Audio FX, FOBI Quick Chat -->
-        <div class="flex items-center gap-3">
+        <!-- Right Toolbelt -->
+        <div class="flex items-center gap-2.5">
           
-          <!-- Learning Progress Tracker -->
-          <div class="hidden md:flex flex-col items-end">
+          <!-- Student Profile / Login Trigger -->
+          <div id="user-header-chip" class="flex items-center gap-2 bg-brand-card hover:bg-slate-800/80 border border-brand-border px-3 py-1.5 rounded-xl transition-all cursor-pointer" onclick="openLoginModal()">
+            <div class="w-6 h-6 rounded-full bg-brand-gold text-slate-950 flex items-center justify-center text-xs font-bold font-mono">
+              <i class="fa-solid fa-user text-[11px]"></i>
+            </div>
+            <div class="flex flex-col text-left">
+              <span id="user-display-name" class="text-xs font-bold text-white leading-tight">Belum Masuk</span>
+              <span id="user-display-class" class="text-[10px] font-mono text-brand-gold leading-none">Klik untuk Login</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+          </div>
+
+          <!-- Cloud Sync Indicator -->
+          <div id="cloud-sync-status" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/40 border border-emerald-800/60 rounded-lg text-[11px] font-mono text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="sync-label-text">Sinkron Cloud ✓</span>
+          </div>
+
+          <!-- Progress Tracker -->
+          <div class="hidden lg:flex flex-col items-end">
             <div class="flex items-center gap-2">
-              <span class="text-[11px] text-slate-400 font-mono">Progress Belajar:</span>
+              <span class="text-[11px] text-slate-400 font-mono">Progres:</span>
               <span id="header-progress-text" class="text-xs font-mono font-bold text-brand-gold">0%</span>
             </div>
-            <div class="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-700">
+            <div class="w-28 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-700">
               <div id="header-progress-bar" class="h-full bg-gradient-to-r from-brand-amber to-brand-gold transition-all duration-500 w-0"></div>
             </div>
           </div>
 
-          <!-- Virtual Assistant Quick Trigger -->
+          <!-- Assistant Quick Trigger -->
           <button onclick="openAssistantModal()" class="px-3 py-1.5 bg-brand-card hover:bg-slate-800 text-slate-200 border border-brand-border hover:border-brand-cyan/50 text-xs rounded-xl flex items-center gap-1.5 transition-all">
             <i class="fa-solid fa-robot text-brand-cyan text-xs"></i>
             <span class="hidden sm:inline font-mono">Tanya FOBI</span>
@@ -144,9 +143,8 @@
         </div>
       </div>
 
-      <!-- Lower Row: 5 Group Navigation Hub Tabs (No Endless Scrolling) -->
+      <!-- Lower Row: 5 Group Navigation Hub Tabs -->
       <nav class="flex items-center gap-1.5 overflow-x-auto py-2.5 no-scrollbar text-xs font-mono font-bold">
-        
         <button onclick="switchMainTab('tab-beranda')" id="nav-tab-beranda" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all bg-brand-gold text-slate-950 shadow-md">
           <i class="fa-solid fa-house text-xs"></i>
           <span>1. BERANDA & ROADMAP</span>
@@ -165,20 +163,19 @@
 
         <button onclick="switchMainTab('tab-evaluasi')" id="nav-tab-evaluasi" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card">
           <i class="fa-solid fa-square-check text-xs text-emerald-400"></i>
-          <span>4. CEK HASIL & GALERI</span>
+          <span>4. CEK HASIL & GALERI KELAS</span>
         </button>
 
         <button onclick="switchMainTab('tab-refleksi')" id="nav-tab-refleksi" class="main-nav-btn px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0 transition-all text-slate-300 hover:text-white hover:bg-brand-card">
           <i class="fa-solid fa-clipboard-question text-xs text-amber-400"></i>
           <span>5. REFLEKSI & BANTUAN</span>
         </button>
-
       </nav>
 
     </div>
   </header>
 
-  <!-- MAIN VIEWPORT CONTAINER (COMPACT & GROUPED) -->
+  <!-- MAIN VIEWPORT CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- =========================================================================
@@ -197,7 +194,7 @@
                 <i class="fa-solid fa-camera"></i> KELAS XI DKV SMKN 1 SURABAYA
               </span>
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-mono text-slate-300">
-                <i class="fa-solid fa-book"></i> Bab 8 Kemendikbudristek 2023
+                <i class="fa-solid fa-cloud"></i> Sinkronisasi Data Siswa Aktif
               </span>
             </div>
 
@@ -209,7 +206,7 @@
             </h1>
 
             <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
-              Panduan interaktif mengerjakan tugas praktik fotografi. Mulai dari pemahaman tombol kamera digital, teknik ruang tajam, eksplorasi komposisi, demonstrasi live, kurasi hasil mandiri, hingga pengumpulan karya.
+              Panduan interaktif menyelesaikan tugas praktik fotografi. Mulai dari pemahaman tombol kamera, teknik ruang tajam, eksplorasi 9 komposisi, demonstrasi live, evaluasi mandiri, hingga pengumpulan tugas ke galeri kelas.
             </p>
 
             <!-- Quick Action Jumpers -->
@@ -227,15 +224,15 @@
             <!-- Dashboard Mini Counter Grid -->
             <div class="grid grid-cols-3 gap-3 pt-4 border-t border-brand-border/60 max-w-lg text-center font-mono">
               <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
-                <div class="text-[10px] text-slate-400">MODUL</div>
-                <div class="text-base font-bold text-white mt-0.5">5 Modul</div>
+                <div class="text-[10px] text-slate-400">SISWA AKTIF</div>
+                <div id="hero-user-name" class="text-xs font-bold text-white mt-0.5 truncate">Belum Masuk</div>
               </div>
               <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
                 <div class="text-[10px] text-slate-400">TANTANGAN</div>
                 <div class="text-base font-bold text-brand-gold mt-0.5">7 Misi</div>
               </div>
               <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
-                <div class="text-[10px] text-slate-400">STATUS KAMU</div>
+                <div class="text-[10px] text-slate-400">STATUS SELESAI</div>
                 <div id="hero-progress-label" class="text-base font-bold text-emerald-400 mt-0.5">0/7 Selesai</div>
               </div>
             </div>
@@ -262,7 +259,7 @@
               <!-- Viewfinder Top Bar -->
               <div class="relative z-10 flex items-center justify-between text-[10px] font-mono bg-black/70 backdrop-blur px-2.5 py-1 rounded text-white border border-white/10">
                 <span class="text-red-500 font-bold flex items-center gap-1">
-                  <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> REC [STANDBY]
+                  <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> REC [LIVE]
                 </span>
                 <span class="text-emerald-400"><i class="fa-solid fa-battery-three-quarters"></i> 88%</span>
               </div>
@@ -292,25 +289,23 @@
         </div>
       </div>
 
-      <!-- Capaian & Tujuan Pembelajaran (Bab 8 Kemendikbudristek 2023) -->
+      <!-- Capaian & Tujuan Pembelajaran -->
       <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-bullseye text-brand-gold"></i>
-              <span>Tujuan Pembelajaran Fotografi Dasar</span>
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Berdasarkan materi Bab 8 Kemendikbudristek 2023 karya Satrio Pamungkas & Hari Setiawan.
-            </p>
-          </div>
+        <div>
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-bullseye text-brand-gold"></i>
+            <span>Tujuan Pembelajaran Fotografi Dasar</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            Berdasarkan Bab 8 Kemendikbudristek 2023 karya Satrio Pamungkas & Hari Setiawan.
+          </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
             <div class="text-[10px] font-mono text-brand-gold font-bold">TUJUAN 01</div>
             <h3 class="text-sm font-bold text-white mt-1">Memahami Dasar & Kamera</h3>
-            <p class="text-xs text-slate-400 mt-1">Kamera analog vs digital, sensor, dan peran LCD untuk evaluasi foto instan.</p>
+            <p class="text-xs text-slate-400 mt-1">Kamera analog vs digital, sensor, dan evaluasi hasil instan di LCD.</p>
           </div>
           <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
             <div class="text-[10px] font-mono text-brand-gold font-bold">TUJUAN 02</div>
@@ -320,7 +315,7 @@
           <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
             <div class="text-[10px] font-mono text-brand-gold font-bold">TUJUAN 03</div>
             <h3 class="text-sm font-bold text-white mt-1">Penerapan Komposisi</h3>
-            <p class="text-xs text-slate-400 mt-1">Menguasai 9 komposisi visual (Rule of Third, Framing, Leading Lines, dll).</p>
+            <p class="text-xs text-slate-400 mt-1">Menguasai 9 kaidah visual (Rule of Third, Framing, Leading Lines, dll).</p>
           </div>
           <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
             <div class="text-[10px] font-mono text-brand-gold font-bold">TUJUAN 04</div>
@@ -346,7 +341,6 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          
           <!-- Step 1 -->
           <div id="roadmap-card-1" class="bg-brand-card p-3.5 rounded-xl border border-brand-border flex flex-col justify-between">
             <div>
@@ -474,7 +468,6 @@
               <button onclick="markStepComplete(8)" class="px-2 py-1 border border-slate-700 hover:border-emerald-500 hover:text-emerald-400 text-[10px] font-mono rounded transition-colors">✓</button>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -485,7 +478,7 @@
     ========================================================================= -->
     <div id="tab-materi" class="view-content-panel space-y-6">
       
-      <!-- Sub-Tab Header / Module Selector Pills -->
+      <!-- Sub-Tab Header -->
       <div class="bg-brand-surface p-2.5 rounded-2xl border border-brand-border flex items-center gap-2 overflow-x-auto no-scrollbar">
         <button onclick="switchSubModul('sub-modul-1')" id="pill-modul-1" class="sub-modul-pill px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-brand-gold text-slate-950 shadow">
           MODUL 1: KAMERA & EXPOSURE
@@ -507,7 +500,7 @@
       <!-- SUB-TAB 1: MODUL 1 (KAMERA & SIMULATOR SEGITIGA EXPOSURE) -->
       <div id="sub-modul-1" class="sub-tab-panel active-subtab space-y-6">
         
-        <!-- Analog vs Digital Explanation Header -->
+        <!-- Analog vs Digital Comparison -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-brand-card p-4 rounded-2xl border border-slate-800">
             <div class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-1">
@@ -554,7 +547,7 @@
                   <div id="sim-bg-layer" class="absolute inset-0 bg-cover bg-center transition-all duration-300 scale-105"
                     style="background-image: url('https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80');"></div>
                   
-                  <!-- Skater Subject (tested for Freezing vs Motion Blur) -->
+                  <!-- Moving Subject -->
                   <div id="sim-moving-subject" class="absolute inset-0 flex items-center justify-center pointer-events-none transition-all">
                     <div id="sim-subject-card" class="p-3 bg-slate-950/75 backdrop-blur rounded-xl border border-brand-gold flex flex-col items-center gap-1.5 shadow-2xl">
                       <div class="relative">
@@ -774,8 +767,8 @@
                 <div class="border-r border-b border-brand-gold/50"></div>
                 <div class="border-r border-b border-brand-gold/50"></div>
                 <div class="border-b border-brand-gold/50"></div>
-                <div class="border-r border-brand-gold/50"></div>
-                <div class="border-r border-brand-gold/50"></div>
+                <div class="border-r border-b border-brand-gold/50"></div>
+                <div class="border-r border-b border-brand-gold/50"></div>
                 <div></div>
               </div>
 
@@ -861,7 +854,6 @@
       <!-- SUB-TAB 4: MODUL 4 (6 TEKNIK PENGAMBILAN GAMBAR) -->
       <div id="sub-modul-4" class="sub-tab-panel space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          
           <!-- Technique A: DoF -->
           <div class="bg-brand-card p-4 rounded-xl border border-brand-border flex flex-col justify-between">
             <div>
@@ -869,9 +861,7 @@
               <h4 class="text-sm font-bold text-white mt-0.5">Depth of Field (DoF)</h4>
               <p class="text-xs text-slate-300 mt-1">Bukaan diafragma lebar menghasilkan latar belakang bokeh halus.</p>
             </div>
-            <button onclick="openTechniqueDemo('dof')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-brand-gold hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">
-              Uji Coba Lab Bokeh
-            </button>
+            <button onclick="openTechniqueDemo('dof')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-brand-gold hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">Uji Coba Lab Bokeh</button>
           </div>
 
           <!-- Technique B: Freezing -->
@@ -881,9 +871,7 @@
               <h4 class="text-sm font-bold text-white mt-0.5">Freezing (≥ 1/250s)</h4>
               <p class="text-xs text-slate-300 mt-1">Membekukan gerakan cepat subjek di udara tanpa motion blur.</p>
             </div>
-            <button onclick="openTechniqueDemo('freezing')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-brand-cyan hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">
-              Uji Coba Lab Freezing
-            </button>
+            <button onclick="openTechniqueDemo('freezing')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-brand-cyan hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">Uji Coba Lab Freezing</button>
           </div>
 
           <!-- Technique C: Bulb -->
@@ -893,9 +881,7 @@
               <h4 class="text-sm font-bold text-white mt-0.5">Bulb / Light Painting</h4>
               <p class="text-xs text-slate-300 mt-1">Shutter terbuka lama untuk melukis jejak cahaya di ruang gelap.</p>
             </div>
-            <button onclick="openTechniqueDemo('bulb')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">
-              Lukis Jejak Cahaya (Canvas)
-            </button>
+            <button onclick="openTechniqueDemo('bulb')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">Lukis Jejak Cahaya (Canvas)</button>
           </div>
 
           <!-- Technique D: Panning -->
@@ -905,9 +891,7 @@
               <h4 class="text-sm font-bold text-white mt-0.5">Panning (1/30s)</h4>
               <p class="text-xs text-slate-300 mt-1">Ayunkan kamera mengikuti arah gerak motor/sepeda.</p>
             </div>
-            <button onclick="openTechniqueDemo('panning')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-emerald-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">
-              Uji Coba Lab Panning
-            </button>
+            <button onclick="openTechniqueDemo('panning')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-emerald-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">Uji Coba Lab Panning</button>
           </div>
 
           <!-- Technique E: Siluet -->
@@ -917,9 +901,7 @@
               <h4 class="text-sm font-bold text-white mt-0.5">Siluet Backlight</h4>
               <p class="text-xs text-slate-300 mt-1">Objek membelakangi sinar matahari, ukur metering ke langit.</p>
             </div>
-            <button onclick="openTechniqueDemo('siluet')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-indigo-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">
-              Uji Coba Lab Siluet
-            </button>
+            <button onclick="openTechniqueDemo('siluet')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-indigo-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">Uji Coba Lab Siluet</button>
           </div>
 
           <!-- Technique F: RAW -->
@@ -929,11 +911,8 @@
               <h4 class="text-sm font-bold text-white mt-0.5">RAW Processing</h4>
               <p class="text-xs text-slate-300 mt-1">File mentah tanpa kompresi dengan rentang dinamis maksimal.</p>
             </div>
-            <button onclick="openTechniqueDemo('raw')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-pink-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">
-              Bandingkan RAW vs JPEG
-            </button>
+            <button onclick="openTechniqueDemo('raw')" class="mt-3 w-full py-1.5 bg-slate-800 hover:bg-pink-400 hover:text-slate-950 text-xs font-mono font-bold rounded-lg transition-colors">Bandingkan RAW vs JPEG</button>
           </div>
-
         </div>
       </div>
 
@@ -958,7 +937,7 @@
       
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- Left: 7 Misi Praktik Lapangan (Mission Board) -->
+        <!-- Left: 7 Misi Praktik Lapangan -->
         <div class="lg:col-span-7 space-y-3">
           <div class="flex items-center justify-between pb-2 border-b border-brand-border">
             <div>
@@ -966,14 +945,13 @@
                 <i class="fa-solid fa-trophy text-brand-gold"></i>
                 <span>7 Tantangan Fotografi Siswa</span>
               </h2>
-              <p class="text-xs text-slate-400">Pilih misi, lihat demonstrasi, lalu centang jika sudah memotret.</p>
+              <p class="text-xs text-slate-400">Pilih misi, coba tekniknya, lalu centang untuk menyimpan ke akun Anda.</p>
             </div>
             <span id="mission-counter-text" class="text-xs font-mono font-bold text-brand-gold bg-brand-gold/15 px-2.5 py-1 rounded border border-brand-gold/30">0 / 7 Selesai</span>
           </div>
 
           <!-- 7 Mission List -->
           <div class="space-y-2.5">
-            
             <div id="mission-card-1" class="bg-brand-card p-3.5 rounded-xl border border-brand-border flex items-center justify-between gap-3">
               <div>
                 <div class="flex items-center gap-2">
@@ -993,7 +971,7 @@
                   <span id="mission-status-2" class="text-[10px] font-mono text-slate-400">Belum Selesai</span>
                 </div>
                 <h4 class="text-xs font-bold text-white mt-0.5">Frame in Frame</h4>
-                <p class="text-[11px] text-slate-400">Gunakan jendela, pintu kelas, atau dedaunan sebagai bingkai.</p>
+                <p class="text-[11px] text-slate-400">Gunakan jendela, pintu kelas, atau dedaunan sebagai bingkai alami.</p>
               </div>
               <button onclick="toggleMission(2)" id="btn-mission-2" class="px-3 py-1.5 bg-brand-gold text-slate-950 font-bold text-xs font-mono rounded-lg shrink-0">Tandai Selesai ✓</button>
             </div>
@@ -1005,7 +983,7 @@
                   <span id="mission-status-3" class="text-[10px] font-mono text-slate-400">Belum Selesai</span>
                 </div>
                 <h4 class="text-xs font-bold text-white mt-0.5">Leading Lines</h4>
-                <p class="text-[11px] text-slate-400">Garis lorong atau ubin lantai menuntun mata ke subjek.</p>
+                <p class="text-[11px] text-slate-400">Garis lorong atau ubin lantai menuntun mata ke subjek utama.</p>
               </div>
               <button onclick="toggleMission(3)" id="btn-mission-3" class="px-3 py-1.5 bg-brand-gold text-slate-950 font-bold text-xs font-mono rounded-lg shrink-0">Tandai Selesai ✓</button>
             </div>
@@ -1029,7 +1007,7 @@
                   <span id="mission-status-5" class="text-[10px] font-mono text-slate-400">Belum Selesai</span>
                 </div>
                 <h4 class="text-xs font-bold text-white mt-0.5">Freezing (Shutter Cepat)</h4>
-                <p class="text-[11px] text-slate-400">Bekukan subjek yang melompat atau cipratan air (≥ 1/250s).</p>
+                <p class="text-[11px] text-slate-400">Bekukan subjek yang melompat atau objek bergerak (≥ 1/250s).</p>
               </div>
               <button onclick="toggleMission(5)" id="btn-mission-5" class="px-3 py-1.5 bg-brand-gold text-slate-950 font-bold text-xs font-mono rounded-lg shrink-0">Tandai Selesai ✓</button>
             </div>
@@ -1057,11 +1035,10 @@
               </div>
               <button onclick="toggleMission(7)" id="btn-mission-7" class="px-3 py-1.5 bg-brand-gold text-slate-950 font-bold text-xs font-mono rounded-lg shrink-0">Tandai Selesai ✓</button>
             </div>
-
           </div>
         </div>
 
-        <!-- Right: Workflow 8-Langkah Asisten Tugas (Interactive Checklist) -->
+        <!-- Right: Workflow 8-Langkah Asisten Tugas -->
         <div class="lg:col-span-5 bg-brand-surface p-5 rounded-2xl border border-brand-border space-y-4">
           <div class="border-b border-brand-border pb-3">
             <h3 class="text-base font-bold text-white flex items-center gap-2">
@@ -1117,7 +1094,7 @@
     </div>
 
     <!-- =========================================================================
-         KELOMPOK 4: CEK HASIL FOTO & GALERI KARYA SISWA
+         KELOMPOK 4: CEK HASIL FOTO & GALERI KARYA SISWA REAL-TIME
     ========================================================================= -->
     <div id="tab-evaluasi" class="view-content-panel space-y-6">
       
@@ -1129,7 +1106,7 @@
               <i class="fa-solid fa-list-check text-brand-gold"></i>
               <span>Evaluasi Mandiri: Apakah Fotomu Sudah Siap?</span>
             </h2>
-            <p class="text-xs text-slate-400">Centang indikator di bawah sebelum mengumpulkan karya ke guru.</p>
+            <p class="text-xs text-slate-400">Centang indikator di bawah sebelum mengumpulkan karya ke galeri kelas.</p>
           </div>
           <div id="eval-result-badge" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 font-mono text-center">
             <span class="text-[10px] text-slate-400 block uppercase">STATUS KELAYAKAN</span>
@@ -1138,7 +1115,6 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
-          
           <div class="bg-brand-card p-3 rounded-xl border border-brand-border space-y-2">
             <span class="font-mono text-brand-gold font-bold block">1. KOMPOSISI</span>
             <label class="flex items-start gap-1.5 cursor-pointer text-slate-300">
@@ -1198,7 +1174,6 @@
               <span>Daya tarik visual</span>
             </label>
           </div>
-
         </div>
 
         <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between text-xs font-mono">
@@ -1207,94 +1182,49 @@
         </div>
       </div>
 
-      <!-- Student Showcase Gallery Grid -->
+      <!-- Live Student Showcase Gallery Grid (Data Nyata / No Bots) -->
       <div class="space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 class="text-lg font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-images text-brand-cyan"></i>
-              <span>Galeri Portfolio Siswa XI DKV</span>
+              <span>Galeri Karya Siswa XI DKV (Data Nyata)</span>
             </h2>
-            <p class="text-xs text-slate-400">Contoh hasil foto siswa yang memenuhi kriteria evaluasi tugas.</p>
+            <p class="text-xs text-slate-400">Karya asli yang dikumpulkan oleh siswa kelas XI DKV SMKN 1 Surabaya.</p>
           </div>
           <button onclick="openSubmitFormModal()" class="px-4 py-2 bg-brand-gold hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl font-mono transition-all flex items-center gap-1.5 self-start sm:self-auto shadow">
             <i class="fa-solid fa-cloud-arrow-up"></i>
-            <span>Kumpulkan Tugas (Drive/Form)</span>
+            <span>+ Kumpulkan Karya Saya</span>
           </button>
         </div>
 
         <!-- Filter Buttons -->
         <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <button onclick="filterGallery('all')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-gold text-slate-950 font-bold">Semua</button>
-          <button onclick="filterGallery('rot')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Rule of Third</button>
-          <button onclick="filterGallery('freezing')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Freezing</button>
-          <button onclick="filterGallery('panning')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Panning</button>
-          <button onclick="filterGallery('siluet')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Siluet</button>
+          <button onclick="filterGallery('all')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-gold text-slate-950 font-bold">Semua Karya (<span id="total-gallery-count">0</span>)</button>
+          <button onclick="filterGallery('Rule of Third')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Rule of Third</button>
+          <button onclick="filterGallery('Freezing')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Freezing</button>
+          <button onclick="filterGallery('Panning')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Panning</button>
+          <button onclick="filterGallery('Siluet')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">Siluet</button>
+          <button onclick="filterGallery('Depth of Field')" class="gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border">DoF (Bokeh)</button>
         </div>
 
-        <!-- Cards -->
+        <!-- Dynamic Live Gallery Grid Container -->
         <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          <div class="gallery-item rot bg-brand-card rounded-xl border border-brand-border overflow-hidden">
-            <div class="aspect-video bg-slate-800 relative">
-              <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80" alt="Karya Siswa" class="w-full h-full object-cover">
-              <span class="absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500 text-white font-bold">Selesai</span>
-            </div>
-            <div class="p-3">
-              <span class="text-[9px] font-mono text-brand-gold font-bold">RULE OF THIRD</span>
-              <h4 class="text-xs font-bold text-white mt-0.5">Sudut Tenang Koridor</h4>
-              <div class="text-[11px] text-slate-400 mt-1 flex justify-between">
-                <span>Arya Pratama</span>
-                <span class="font-mono">XI DKV 1</span>
-              </div>
-            </div>
-          </div>
+          <!-- Will be injected in real-time from Firestore -->
+        </div>
 
-          <div class="gallery-item freezing bg-brand-card rounded-xl border border-brand-border overflow-hidden">
-            <div class="aspect-video bg-slate-800 relative">
-              <img src="https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=600&q=80" alt="Karya Siswa" class="w-full h-full object-cover">
-              <span class="absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500 text-white font-bold">Selesai</span>
-            </div>
-            <div class="p-3">
-              <span class="text-[9px] font-mono text-brand-cyan font-bold">FREEZING (1/1000s)</span>
-              <h4 class="text-xs font-bold text-white mt-0.5">Percikan Air Lapangan</h4>
-              <div class="text-[11px] text-slate-400 mt-1 flex justify-between">
-                <span>Nadhira Salsabila</span>
-                <span class="font-mono">XI DKV 2</span>
-              </div>
-            </div>
+        <!-- Empty State (Shown when no real submissions yet) -->
+        <div id="gallery-empty-state" class="p-8 text-center bg-brand-surface rounded-2xl border border-brand-border space-y-3">
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-800 text-brand-gold flex items-center justify-center text-xl">
+            <i class="fa-solid fa-camera-retro"></i>
           </div>
-
-          <div class="gallery-item panning bg-brand-card rounded-xl border border-brand-border overflow-hidden">
-            <div class="aspect-video bg-slate-800 relative">
-              <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80" alt="Karya Siswa" class="w-full h-full object-cover">
-              <span class="absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500 text-white font-bold">Selesai</span>
-            </div>
-            <div class="p-3">
-              <span class="text-[9px] font-mono text-emerald-400 font-bold">PANNING (1/30s)</span>
-              <h4 class="text-xs font-bold text-white mt-0.5">Laju Gerbang Sore</h4>
-              <div class="text-[11px] text-slate-400 mt-1 flex justify-between">
-                <span>Dimas Bagus</span>
-                <span class="font-mono">XI DKV 1</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="gallery-item siluet bg-brand-card rounded-xl border border-brand-border overflow-hidden">
-            <div class="aspect-video bg-slate-800 relative">
-              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80" alt="Karya Siswa" class="w-full h-full object-cover">
-              <span class="absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500 text-white font-bold">Selesai</span>
-            </div>
-            <div class="p-3">
-              <span class="text-[9px] font-mono text-amber-400 font-bold">SILUET BACKLIGHT</span>
-              <h4 class="text-xs font-bold text-white mt-0.5">Bayang Siluet Senja</h4>
-              <div class="text-[11px] text-slate-400 mt-1 flex justify-between">
-                <span>Fitri Rahmawati</span>
-                <span class="font-mono">XI DKV 2</span>
-              </div>
-            </div>
-          </div>
-
+          <h3 class="text-sm font-bold text-white">Belum Ada Karya yang Dikumpulkan</h3>
+          <p class="text-xs text-slate-400 max-w-md mx-auto">
+            Semua data bot/contoh sebelumnya telah dibersihkan. Jadilah siswa pertama yang menyelesaikan misi dan mengumpulkan karya foto ke galeri kelas!
+          </p>
+          <button onclick="openSubmitFormModal()" class="px-4 py-2 bg-brand-gold text-slate-950 font-bold text-xs rounded-xl font-mono">
+            Kumpulkan Foto Pertama
+          </button>
         </div>
       </div>
 
@@ -1314,7 +1244,7 @@
               <i class="fa-solid fa-pen-nib text-brand-gold"></i>
               <span>Refleksi Perjalanan Fotografi Saya</span>
             </h2>
-            <p class="text-xs text-slate-400">Renungkan proses belajar Anda untuk perbaikan keterampilan di DKV.</p>
+            <p class="text-xs text-slate-400">Jawaban refleksi akan otomatis tersimpan ke akun Anda.</p>
           </div>
 
           <!-- Skala Emoticon -->
@@ -1364,7 +1294,7 @@
             </div>
 
             <div class="pt-2 flex flex-wrap gap-2">
-              <button onclick="saveReflection()" class="px-4 py-2 bg-brand-gold text-slate-950 font-bold font-mono text-xs rounded-lg shadow">Simpan Refleksi</button>
+              <button onclick="saveReflection()" class="px-4 py-2 bg-brand-gold text-slate-950 font-bold font-mono text-xs rounded-lg shadow">Simpan Refleksi ke Cloud</button>
               <button onclick="exportReflectionText()" class="px-3.5 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-lg border border-slate-700">Salin Teks Rangkuman</button>
             </div>
             <div id="reflection-save-alert" class="hidden text-xs font-mono text-emerald-400 p-2 bg-emerald-950/40 rounded border border-emerald-800"></div>
@@ -1373,7 +1303,6 @@
 
         <!-- Right: Troubleshooting Kendala Lapangan & Selesai -->
         <div class="lg:col-span-5 space-y-4">
-          
           <div class="bg-brand-surface p-5 rounded-2xl border border-brand-border space-y-3">
             <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
               <i class="fa-solid fa-triangle-exclamation text-brand-gold"></i>
@@ -1405,7 +1334,7 @@
             <div class="w-10 h-10 mx-auto rounded-xl bg-brand-gold text-slate-950 flex items-center justify-center text-lg font-bold">
               <i class="fa-solid fa-award"></i>
             </div>
-            <h3 class="text-base font-bold text-white">Selamat! Anda Telah Menyelesaikan Paket Belajar</h3>
+            <h3 class="text-base font-bold text-white">Paket Belajar Selesai</h3>
             <p class="text-xs text-slate-300 leading-relaxed">
               "Fotografi bukan hanya tentang menekan tombol shutter, tetapi mengintegrasikan objek, pencahayaan, dan komposisi."
             </p>
@@ -1416,7 +1345,6 @@
               Konfirmasi Selesai Pembelajaran ✓
             </button>
           </div>
-
         </div>
 
       </div>
@@ -1425,7 +1353,7 @@
 
   </main>
 
-  <!-- COMPACT FOOTER WITH OFFICIAL BOOK CITATION -->
+  <!-- FOOTER -->
   <footer class="bg-black border-t border-brand-border py-6 mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-400 flex flex-col md:flex-row items-center justify-between gap-3">
       <div>
@@ -1438,9 +1366,129 @@
   </footer>
 
   <!-- =========================================================================
-       MODALS: DEMO KOMPOSISI, LAB TEKNIK, CHAT FOBI, SUBMISSION
+       MODALS: LOGIN, SUBMISSION TUGAS, DEMO KOMPOSISI, LAB TEKNIK, CHAT FOBI
   ========================================================================= -->
-  
+
+  <!-- MODAL LOGIN SISWA (NAMA & KELAS) -->
+  <div id="modal-login" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-brand-card border-2 border-brand-gold/50 max-w-md w-full rounded-2xl p-6 shadow-2xl relative">
+      <button onclick="closeLoginModal()" class="absolute top-3.5 right-3.5 w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-xs"></i>
+      </button>
+      
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-brand-gold text-slate-950 flex items-center justify-center font-black text-lg">
+          <i class="fa-solid fa-id-card"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-white">Identitas Peserta Didik</h3>
+          <p class="text-xs text-slate-400">Masuk untuk menyimpan progres & karya foto Anda.</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleLoginSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="text-xs font-mono text-slate-300 block mb-1">Nama Lengkap Siswa *</label>
+          <input type="text" id="login-input-name" required placeholder="Contoh: Bima Bagus Pratama"
+            class="w-full bg-slate-900 border border-slate-700 focus:border-brand-gold rounded-xl p-2.5 text-xs text-white outline-none">
+        </div>
+
+        <div>
+          <label class="text-xs font-mono text-slate-300 block mb-1">Pilih Kelas DKV *</label>
+          <select id="login-input-class" required class="w-full bg-slate-900 border border-slate-700 focus:border-brand-gold rounded-xl p-2.5 text-xs text-white outline-none">
+            <option value="XI DKV 1">XI DKV 1</option>
+            <option value="XI DKV 2">XI DKV 2</option>
+            <option value="XI DKV 3">XI DKV 3</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-mono text-slate-300 block mb-1">Nomor Presensi / Absen (Opsional)</label>
+          <input type="number" id="login-input-nis" placeholder="Contoh: 14" min="1" max="40"
+            class="w-full bg-slate-900 border border-slate-700 focus:border-brand-gold rounded-xl p-2.5 text-xs text-white outline-none">
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-brand-gold to-amber-600 hover:from-amber-400 hover:to-brand-gold text-slate-950 font-bold font-mono text-xs rounded-xl shadow-lg transition-all">
+            Simpan Identitas & Mulai Belajar ✓
+          </button>
+          <button type="button" onclick="logoutStudent()" id="btn-logout" class="hidden w-full py-2 bg-slate-800 text-red-400 hover:text-red-300 text-xs font-mono rounded-xl border border-slate-700">
+            Keluar / Ganti Siswa Lain
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL PENGUMPULAN FOTO TUGAS (REAL DATA SUBMISSION) -->
+  <div id="modal-submit" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-border max-w-lg w-full rounded-2xl p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeSubmitModal()" class="absolute top-3.5 right-3.5 w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-xs"></i>
+      </button>
+
+      <div class="flex items-center gap-2.5 mb-2">
+        <div class="w-9 h-9 rounded-xl bg-brand-gold/20 text-brand-gold flex items-center justify-center text-base">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-white">Kumpulkan Karya Foto Praktik</h3>
+          <p class="text-[11px] text-slate-400">Karya akan langsung tampil di galeri kelas secara nyata.</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleRealPhotoSubmission(event)" class="space-y-3 pt-2 text-xs font-mono">
+        <div>
+          <label class="text-slate-300 block mb-1">Pilih Misi yang Dikerjakan *</label>
+          <select id="submit-mission" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs">
+            <option value="Rule of Third">MISI 01 — Rule of Third</option>
+            <option value="Frame in Frame">MISI 02 — Frame in Frame</option>
+            <option value="Leading Lines">MISI 03 — Leading Lines</option>
+            <option value="Depth of Field">MISI 04 — Depth of Field (Bokeh)</option>
+            <option value="Freezing">MISI 05 — Freezing (Gerakan Cepat)</option>
+            <option value="Panning">MISI 06 — Panning (1/30s)</option>
+            <option value="Siluet">MISI 07 — Siluet Backlight</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-slate-300 block mb-1">Judul Karya Foto *</label>
+          <input type="text" id="submit-title" required placeholder="Contoh: Sudut Senja Koridor SMKN 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs">
+        </div>
+
+        <div>
+          <label class="text-slate-300 block mb-1">URL Tautan Foto (Unsplash/Imgur/Google Drive Image) *</label>
+          <input type="url" id="submit-url" required placeholder="https://images.unsplash.com/... atau tautan foto publik" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs">
+          <span class="text-[10px] text-slate-500 mt-0.5 block">Tips: Masukkan URL foto Anda atau gunakan link gambar contoh saat simulasi.</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-[10px] text-slate-400 block mb-0.5">Shutter Speed</label>
+            <input type="text" id="submit-shutter" placeholder="1/250s" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-xs">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400 block mb-0.5">Diafragma</label>
+            <input type="text" id="submit-aperture" placeholder="f/2.8" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-xs">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400 block mb-0.5">ISO</label>
+            <input type="text" id="submit-iso" placeholder="ISO 400" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-xs">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-300 block mb-1">Catatan / Konsep Singkat Foto</label>
+          <textarea id="submit-notes" rows="2" placeholder="Jelaskan objek utama dan teknik yang digunakan..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs"></textarea>
+        </div>
+
+        <button type="submit" id="btn-submit-task" class="w-full py-2.5 bg-brand-gold hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-all shadow">
+          Kirim & Publikasikan ke Galeri Siswa ✓
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal Demo Komposisi -->
   <div id="modal-comp" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-border max-w-lg w-full rounded-2xl p-5 shadow-2xl relative">
@@ -1520,49 +1568,390 @@
     </div>
   </div>
 
-  <!-- Modal Submission Link -->
-  <div id="modal-submit" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="bg-brand-card border border-brand-border max-w-sm w-full rounded-2xl p-5 shadow-2xl relative">
-      <button onclick="closeSubmitModal()" class="absolute top-3.5 right-3.5 w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-        <i class="fa-solid fa-xmark text-xs"></i>
-      </button>
-      <div class="w-10 h-10 rounded-xl bg-brand-gold/20 text-brand-gold flex items-center justify-center text-lg mb-2">
-        <i class="fa-solid fa-cloud-arrow-up"></i>
-      </div>
-      <h3 class="text-sm font-bold text-white mb-1">Pengumpulan Foto Tugas</h3>
-      <p class="text-xs text-slate-300 mb-3">Format nama berkas: <code class="text-brand-gold bg-black/50 px-1 py-0.5 rounded">XI_DKV_[NAMA]_[MISI].jpg</code></p>
-      <button onclick="mockDriveOpen()" class="w-full py-2 bg-brand-gold text-slate-950 font-bold text-xs rounded-xl font-mono mb-2">Buka Google Drive Kelas</button>
-      <button onclick="closeSubmitModal()" class="w-full py-1.5 bg-slate-800 text-slate-300 text-xs rounded-xl font-mono">Tutup</button>
-    </div>
-  </div>
+  <!-- =========================================================================
+       FIREBASE MODULE & APPLICATION LOGIC SCRIPTS
+  ========================================================================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  <!-- APPLICATION SCRIPTS & CONTROLLERS -->
-  <script>
-    /* -------------------------------------------------------------
-       STATE MANAGEMENT & PERSISTENCE
-    ------------------------------------------------------------- */
-    const state = {
-      completedSteps: JSON.parse(localStorage.getItem('fobi_steps') || '[]'),
-      completedMissions: JSON.parse(localStorage.getItem('fobi_missions') || '[]'),
+    // Application ID & Config from Environment
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'asisten-fotografi-smkn1';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo" };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Global State Container
+    window.appState = {
+      user: null,
+      userId: null,
+      studentProfile: JSON.parse(localStorage.getItem('fobi_student') || 'null'),
+      completedSteps: [],
+      completedMissions: [],
+      gallerySubmissions: [],
       audioEnabled: true
     };
 
-    /* TAB SWITCHER CONTROLLER (NO ENDLESS SCROLLING) */
-    function switchMainTab(targetTabId, subModulId = null) {
-      playDialClick();
-      
-      // Hide all panels
-      document.querySelectorAll('.view-content-panel').forEach(panel => {
-        panel.classList.remove('active-view');
-      });
+    // Authenticate First (RULE 3)
+    async function initAuthAndData() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.warn("Auth initialization fallback:", err);
+      }
+    }
 
-      // Show targeted panel
-      const activePanel = document.getElementById(targetTabId);
-      if (activePanel) {
-        activePanel.classList.add('active-view');
+    onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        window.appState.user = firebaseUser;
+        window.appState.userId = firebaseUser.uid;
+        
+        // Load User Progress from Firestore
+        await loadUserDataFromCloud();
+        // Listen to Real Student Gallery Submissions (Public Data - RULE 1)
+        listenToStudentSubmissions();
+        
+        updateSyncBadge(true);
+      }
+    });
+
+    // Load student profile & progress
+    async function loadUserDataFromCloud() {
+      if (!window.appState.userId) return;
+      try {
+        const progressDocRef = doc(db, 'artifacts', appId, 'users', window.appState.userId, 'userData', 'progress');
+        const snap = await getDoc(progressDocRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          window.appState.completedSteps = data.steps || [];
+          window.appState.completedMissions = data.missions || [];
+          if (data.studentProfile) {
+            window.appState.studentProfile = data.studentProfile;
+            localStorage.setItem('fobi_student', JSON.stringify(data.studentProfile));
+          }
+          if (data.reflection) {
+            populateReflectionForm(data.reflection);
+          }
+        } else if (window.appState.studentProfile) {
+          // If local exists but not cloud, sync it
+          await syncProgressToCloud();
+        }
+      } catch (e) {
+        console.error("Error reading progress:", e);
+      }
+      renderStudentIdentityUI();
+      window.updateGlobalProgress();
+    }
+
+    // Save Progress to Firestore
+    window.syncProgressToCloud = async function() {
+      if (!window.appState.userId) return;
+      try {
+        const progressDocRef = doc(db, 'artifacts', appId, 'users', window.appState.userId, 'userData', 'progress');
+        await setDoc(progressDocRef, {
+          studentProfile: window.appState.studentProfile,
+          steps: window.appState.completedSteps,
+          missions: window.appState.completedMissions,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+        updateSyncBadge(true);
+      } catch (e) {
+        console.error("Sync error:", e);
+        updateSyncBadge(false);
+      }
+    };
+
+    // Real-Time Submissions Listener (RULE 1 & 2: Simple Collection, No OrderBy)
+    function listenToStudentSubmissions() {
+      const submissionsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+      onSnapshot(submissionsColRef, (snapshot) => {
+        const list = [];
+        snapshot.forEach((docSnap) => {
+          list.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        // Sort in memory by timestamp descending
+        list.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+        window.appState.gallerySubmissions = list;
+        renderRealStudentGallery();
+      }, (error) => {
+        console.error("Submissions listener error:", error);
+      });
+    }
+
+    // Save Real Submission to Firestore
+    window.submitPhotoToCloud = async function(submissionData) {
+      if (!window.appState.userId) {
+        window.alertBox("Sesi belum terhubung. Mohon coba beberapa detik lagi.");
+        return;
+      }
+      try {
+        const subId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+        const subDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submissions', subId);
+        await setDoc(subDocRef, {
+          ...submissionData,
+          authorId: window.appState.userId,
+          timestamp: new Date().toISOString()
+        });
+        window.alertBox("Karya foto berhasil dipublikasikan ke galeri kelas!");
+        window.closeSubmitModal();
+      } catch (e) {
+        console.error("Submission failed:", e);
+        window.alertBox("Gagal mengunggah karya. Periksa koneksi internet.");
+      }
+    };
+
+    // Save Reflection to Firestore
+    window.saveReflectionToCloud = async function(reflectData) {
+      if (!window.appState.userId) return;
+      try {
+        const progressDocRef = doc(db, 'artifacts', appId, 'users', window.appState.userId, 'userData', 'progress');
+        await setDoc(progressDocRef, {
+          reflection: reflectData,
+          reflectionUpdatedAt: new Date().toISOString()
+        }, { merge: true });
+        updateSyncBadge(true);
+      } catch (e) {
+        console.error("Reflection save error:", e);
+      }
+    };
+
+    function updateSyncBadge(isSuccess) {
+      const badge = document.getElementById('cloud-sync-status');
+      const label = document.getElementById('sync-label-text');
+      if (badge && label) {
+        badge.classList.remove('hidden');
+        if (isSuccess) {
+          label.innerText = 'Sinkron Cloud ✓';
+          badge.className = 'hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/40 border border-emerald-800/60 rounded-lg text-[11px] font-mono text-emerald-400';
+        } else {
+          label.innerText = 'Offline / Lokal';
+          badge.className = 'hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-amber-950/40 border border-amber-800/60 rounded-lg text-[11px] font-mono text-amber-400';
+        }
+      }
+    }
+
+    function populateReflectionForm(data) {
+      if (data.q1) document.getElementById('ref-q1').value = data.q1;
+      if (data.q2) document.getElementById('ref-q2').value = data.q2;
+      if (data.q3) document.getElementById('ref-q3').value = data.q3;
+      if (data.q4) document.getElementById('ref-q4').value = data.q4;
+      if (data.q5) document.getElementById('ref-q5').value = data.q5;
+      if (data.scale) window.selectReflectScale(data.scale);
+    }
+
+    // Initialize Auth
+    initAuthAndData();
+  </script>
+
+  <script>
+    /* -------------------------------------------------------------
+       STUDENT LOGIN & IDENTITY CONTROLLER
+    ------------------------------------------------------------- */
+    function openLoginModal() {
+      const profile = window.appState?.studentProfile;
+      if (profile) {
+        document.getElementById('login-input-name').value = profile.name || '';
+        document.getElementById('login-input-class').value = profile.studentClass || 'XI DKV 1';
+        document.getElementById('login-input-nis').value = profile.nis || '';
+        document.getElementById('btn-logout').classList.remove('hidden');
+      } else {
+        document.getElementById('btn-logout').classList.add('hidden');
+      }
+      document.getElementById('modal-login').classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('modal-login').classList.add('hidden');
+    }
+
+    function handleLoginSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('login-input-name').value.trim();
+      const studentClass = document.getElementById('login-input-class').value;
+      const nis = document.getElementById('login-input-nis').value.trim();
+
+      if (!name) return;
+
+      const profile = { name, studentClass, nis };
+      window.appState.studentProfile = profile;
+      localStorage.setItem('fobi_student', JSON.stringify(profile));
+
+      renderStudentIdentityUI();
+      closeLoginModal();
+      alertBox(`Selamat datang, ${name}! Progres belajarmu kini tersimpan otomatis.`);
+
+      if (window.syncProgressToCloud) {
+        window.syncProgressToCloud();
+      }
+    }
+
+    function logoutStudent() {
+      window.appState.studentProfile = null;
+      localStorage.removeItem('fobi_student');
+      document.getElementById('login-input-name').value = '';
+      document.getElementById('login-input-nis').value = '';
+      renderStudentIdentityUI();
+      closeLoginModal();
+      alertBox('Anda telah keluar dari akun siswa.');
+    }
+
+    function renderStudentIdentityUI() {
+      const profile = window.appState?.studentProfile;
+      const dispName = document.getElementById('user-display-name');
+      const dispClass = document.getElementById('user-display-class');
+      const heroName = document.getElementById('hero-user-name');
+
+      if (profile && profile.name) {
+        dispName.innerText = profile.name;
+        dispClass.innerText = `${profile.studentClass}${profile.nis ? ' • Absen ' + profile.nis : ''}`;
+        if (heroName) heroName.innerText = `${profile.name} (${profile.studentClass})`;
+      } else {
+        dispName.innerText = 'Belum Masuk';
+        dispClass.innerText = 'Klik untuk Login';
+        if (heroName) heroName.innerText = 'Belum Masuk';
+      }
+    }
+
+    /* -------------------------------------------------------------
+       REAL STUDENT GALLERY (NO BOTS)
+    ------------------------------------------------------------- */
+    function renderRealStudentGallery(filterCategory = 'all') {
+      const grid = document.getElementById('gallery-grid');
+      const emptyState = document.getElementById('gallery-empty-state');
+      const totalCount = document.getElementById('total-gallery-count');
+      const list = window.appState?.gallerySubmissions || [];
+
+      if (totalCount) totalCount.innerText = list.length;
+
+      if (!grid) return;
+
+      const filtered = filterCategory === 'all' 
+        ? list 
+        : list.filter(item => item.mission === filterCategory);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
       }
 
-      // Update Nav Button Styles
+      if (emptyState) emptyState.classList.add('hidden');
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden flex flex-col justify-between shadow-lg">
+          <div class="aspect-video bg-slate-900 relative overflow-hidden group">
+            <img src="${item.photoUrl}" alt="${escapeHtml(item.title)}" 
+              onerror="this.src='https://placehold.co/600x400/0E1626/F59E0B?text=Foto+Tugas+DKV'"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500 text-white font-bold shadow">
+              Tugas Nyata ✓
+            </span>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div>
+              <span class="text-[9px] font-mono text-brand-gold font-bold uppercase">${escapeHtml(item.mission)}</span>
+              <h4 class="text-xs font-bold text-white mt-0.5 line-clamp-1">${escapeHtml(item.title)}</h4>
+              ${item.notes ? `<p class="text-[11px] text-slate-400 mt-1 line-clamp-2">"${escapeHtml(item.notes)}"</p>` : ''}
+            </div>
+
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] font-mono text-slate-400">
+              <div class="flex items-center gap-1.5 text-white font-semibold">
+                <i class="fa-solid fa-user-pen text-brand-gold text-[9px]"></i>
+                <span>${escapeHtml(item.studentName)}</span>
+              </div>
+              <span class="text-brand-cyan">${escapeHtml(item.studentClass)}</span>
+            </div>
+
+            ${(item.shutter || item.aperture || item.iso) ? `
+              <div class="bg-slate-900/90 px-2 py-1 rounded text-[9px] font-mono text-slate-300 flex justify-between">
+                <span>${escapeHtml(item.shutter || '-')}</span>
+                <span>${escapeHtml(item.aperture || '-')}</span>
+                <span>${escapeHtml(item.iso || '-')}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openSubmitFormModal() {
+      if (!window.appState?.studentProfile) {
+        openLoginModal();
+        alertBox('Silakan masukkan Nama & Kelas terlebih dahulu sebelum mengumpulkan tugas.');
+        return;
+      }
+      document.getElementById('modal-submit').classList.remove('hidden');
+    }
+
+    function closeSubmitModal() {
+      document.getElementById('modal-submit').classList.add('hidden');
+    }
+
+    function handleRealPhotoSubmission(event) {
+      event.preventDefault();
+      const profile = window.appState?.studentProfile;
+      if (!profile) {
+        openLoginModal();
+        return;
+      }
+
+      const mission = document.getElementById('submit-mission').value;
+      const title = document.getElementById('submit-title').value.trim();
+      const photoUrl = document.getElementById('submit-url').value.trim();
+      const shutter = document.getElementById('submit-shutter').value.trim();
+      const aperture = document.getElementById('submit-aperture').value.trim();
+      const iso = document.getElementById('submit-iso').value.trim();
+      const notes = document.getElementById('submit-notes').value.trim();
+
+      const payload = {
+        studentName: profile.name,
+        studentClass: profile.studentClass,
+        mission,
+        title,
+        photoUrl,
+        shutter,
+        aperture,
+        iso,
+        notes
+      };
+
+      if (window.submitPhotoToCloud) {
+        window.submitPhotoToCloud(payload);
+      }
+    }
+
+    function filterGallery(category) {
+      document.querySelectorAll('.gallery-filter-btn').forEach(btn => {
+        btn.className = 'gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border';
+      });
+      event.target.className = 'gallery-filter-btn px-3 py-1 rounded bg-brand-gold text-slate-950 font-bold';
+      renderRealStudentGallery(category);
+    }
+
+    function escapeHtml(string) {
+      if (!string) return '';
+      return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* -------------------------------------------------------------
+       NAVIGATION & TAB SWITCHING
+    ------------------------------------------------------------- */
+    function switchMainTab(targetTabId, subModulId = null) {
+      playDialClick();
+      document.querySelectorAll('.view-content-panel').forEach(panel => panel.classList.remove('active-view'));
+
+      const activePanel = document.getElementById(targetTabId);
+      if (activePanel) activePanel.classList.add('active-view');
+
       const tabMap = {
         'tab-beranda': 'nav-tab-beranda',
         'tab-materi': 'nav-tab-materi',
@@ -1580,15 +1969,10 @@
         }
       });
 
-      // If opening materi tab with specific submodul
-      if (subModulId) {
-        switchSubModul(subModulId);
-      }
-
+      if (subModulId) switchSubModul(subModulId);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* SUB-MODUL SWITCHER (WITHIN KELOMPOK 2) */
     function switchSubModul(targetSubId) {
       playDialClick();
       document.querySelectorAll('.sub-tab-panel').forEach(p => p.classList.remove('active-subtab'));
@@ -1613,10 +1997,13 @@
       });
     }
 
-    /* GLOBAL PROGRESS CALCULATION */
-    function updateGlobalProgress() {
-      const stepPct = (state.completedSteps.length / 8) * 50;
-      const missionPct = (state.completedMissions.length / 7) * 50;
+    /* GLOBAL PROGRESS & MISSIONS */
+    window.updateGlobalProgress = function() {
+      const steps = window.appState?.completedSteps || [];
+      const missions = window.appState?.completedMissions || [];
+
+      const stepPct = (steps.length / 8) * 50;
+      const missionPct = (missions.length / 7) * 50;
       const totalPct = Math.round(stepPct + missionPct);
 
       const progText = document.getElementById('header-progress-text');
@@ -1628,15 +2015,15 @@
 
       if (progText) progText.innerText = `${totalPct}%`;
       if (progBar) progBar.style.width = `${totalPct}%`;
-      if (heroLabel) heroLabel.innerText = `${state.completedMissions.length}/7 Selesai`;
-      if (missionText) missionText.innerText = `${state.completedMissions.length} / 7 Selesai`;
-      if (endStatus) endStatus.innerText = `${state.completedMissions.length} / 7 Misi Selesai`;
-      if (navBadgeMission) navBadgeMission.innerText = `${state.completedMissions.length}/7`;
+      if (heroLabel) heroLabel.innerText = `${missions.length}/7 Selesai`;
+      if (missionText) missionText.innerText = `${missions.length} / 7 Selesai`;
+      if (endStatus) endStatus.innerText = `${missions.length} / 7 Misi Selesai`;
+      if (navBadgeMission) navBadgeMission.innerText = `${missions.length}/7`;
 
       for (let i = 1; i <= 8; i++) {
         const badge = document.getElementById(`badge-step-${i}`);
         const card = document.getElementById(`roadmap-card-${i}`);
-        const isDone = state.completedSteps.includes(i);
+        const isDone = steps.includes(i);
         if (badge) {
           badge.innerHTML = isDone ? '✓ Selesai' : '○ Belum';
           badge.className = isDone ? 'text-emerald-400 font-bold' : 'text-slate-400';
@@ -1654,7 +2041,7 @@
         const mStatus = document.getElementById(`mission-status-${m}`);
         const mBtn = document.getElementById(`btn-mission-${m}`);
         const mCard = document.getElementById(`mission-card-${m}`);
-        const isDone = state.completedMissions.includes(m);
+        const isDone = missions.includes(m);
 
         if (mStatus) {
           mStatus.innerText = isDone ? 'Selesai ✓' : 'Belum Selesai';
@@ -1672,35 +2059,35 @@
           }
         }
       }
-
-      localStorage.setItem('fobi_steps', JSON.stringify(state.completedSteps));
-      localStorage.setItem('fobi_missions', JSON.stringify(state.completedMissions));
-    }
+    };
 
     function markStepComplete(stepNum) {
-      if (!state.completedSteps.includes(stepNum)) {
-        state.completedSteps.push(stepNum);
+      if (!window.appState.completedSteps.includes(stepNum)) {
+        window.appState.completedSteps.push(stepNum);
+        playDialClick();
+        window.updateGlobalProgress();
+        if (window.syncProgressToCloud) window.syncProgressToCloud();
       }
-      playDialClick();
-      updateGlobalProgress();
     }
 
     function toggleMission(missionNum) {
-      const idx = state.completedMissions.indexOf(missionNum);
+      const idx = window.appState.completedMissions.indexOf(missionNum);
       if (idx > -1) {
-        state.completedMissions.splice(idx, 1);
+        window.appState.completedMissions.splice(idx, 1);
       } else {
-        state.completedMissions.push(missionNum);
+        window.appState.completedMissions.push(missionNum);
       }
       playShutterSound();
-      updateGlobalProgress();
+      window.updateGlobalProgress();
+      if (window.syncProgressToCloud) window.syncProgressToCloud();
     }
 
     function resetAllProgress() {
-      state.completedSteps = [];
-      state.completedMissions = [];
-      updateGlobalProgress();
-      alertBox('Progres belajar berhasil di-reset.');
+      window.appState.completedSteps = [];
+      window.appState.completedMissions = [];
+      window.updateGlobalProgress();
+      if (window.syncProgressToCloud) window.syncProgressToCloud();
+      alertBox('Progres belajar telah di-reset.');
     }
 
     function triggerHeroShutter() {
@@ -1750,12 +2137,7 @@
       { val: 'ISO 6400', noise: 0.8, evContrib: 5 }
     ];
 
-    const cameraSim = {
-      apertureIdx: 1, // f/2.8
-      shutterIdx: 4,  // 1/250s
-      isoIdx: 1,      // ISO 200
-      focusPlane: 1   // 0: depan, 1: tengah, 2: belakang
-    };
+    const cameraSim = { apertureIdx: 1, shutterIdx: 4, isoIdx: 1, focusPlane: 1 };
 
     function updateCameraSimulator() {
       const aperture = APERTURE_STOPS[cameraSim.apertureIdx];
@@ -1801,11 +2183,9 @@
       const dimmer = document.getElementById('sim-exposure-dimmer');
       if (dimmer) {
         if (netEv > 0.3) {
-          const opacity = Math.min(0.8, (netEv - 0.3) * 0.4);
-          dimmer.style.backgroundColor = `rgba(255, 255, 255, ${opacity})`;
+          dimmer.style.backgroundColor = `rgba(255, 255, 255, ${Math.min(0.8, (netEv - 0.3) * 0.4)})`;
         } else if (netEv < -0.3) {
-          const opacity = Math.min(0.9, (Math.abs(netEv) - 0.3) * 0.4);
-          dimmer.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
+          dimmer.style.backgroundColor = `rgba(0, 0, 0, ${Math.min(0.9, (Math.abs(netEv) - 0.3) * 0.4)})`;
         } else {
           dimmer.style.backgroundColor = 'transparent';
         }
@@ -1853,50 +2233,24 @@
       }
 
       const grainOverlay = document.getElementById('sim-grain-overlay');
-      if (grainOverlay) {
-        grainOverlay.style.opacity = iso.noise;
-      }
+      if (grainOverlay) grainOverlay.style.opacity = iso.noise;
     }
 
-    function onApertureChange(val) {
-      cameraSim.apertureIdx = parseInt(val, 10);
-      playDialClick();
-      updateCameraSimulator();
-    }
-
-    function onShutterChange(val) {
-      cameraSim.shutterIdx = parseInt(val, 10);
-      playDialClick();
-      updateCameraSimulator();
-    }
-
-    function onIsoChange(val) {
-      cameraSim.isoIdx = parseInt(val, 10);
-      playDialClick();
-      updateCameraSimulator();
-    }
-
+    function onApertureChange(val) { cameraSim.apertureIdx = parseInt(val, 10); playDialClick(); updateCameraSimulator(); }
+    function onShutterChange(val) { cameraSim.shutterIdx = parseInt(val, 10); playDialClick(); updateCameraSimulator(); }
+    function onIsoChange(val) { cameraSim.isoIdx = parseInt(val, 10); playDialClick(); updateCameraSimulator(); }
     function onFocusRingChange(val) {
       cameraSim.focusPlane = parseInt(val, 10);
       playDialClick();
       const lbl = document.getElementById('slider-focus-label');
-      if (lbl) {
-        lbl.innerText = val === '0' ? 'Objek Depan' : (val === '1' ? 'Subjek Utama' : 'Latar Belakang');
-      }
+      if (lbl) lbl.innerText = val === '0' ? 'Objek Depan' : (val === '1' ? 'Subjek Utama' : 'Latar Belakang');
       updateCameraSimulator();
     }
 
     function setCameraPreset(mode) {
       playDialClick();
-      if (mode === 'bokeh') {
-        cameraSim.apertureIdx = 0;
-        cameraSim.shutterIdx = 6;
-        cameraSim.isoIdx = 0;
-      } else if (mode === 'action') {
-        cameraSim.apertureIdx = 1;
-        cameraSim.shutterIdx = 7;
-        cameraSim.isoIdx = 2;
-      }
+      if (mode === 'bokeh') { cameraSim.apertureIdx = 0; cameraSim.shutterIdx = 6; cameraSim.isoIdx = 0; }
+      else if (mode === 'action') { cameraSim.apertureIdx = 1; cameraSim.shutterIdx = 7; cameraSim.isoIdx = 2; }
       document.getElementById('input-aperture').value = cameraSim.apertureIdx;
       document.getElementById('input-shutter').value = cameraSim.shutterIdx;
       document.getElementById('input-iso').value = cameraSim.isoIdx;
@@ -1904,10 +2258,7 @@
     }
 
     function resetCameraSim() {
-      cameraSim.apertureIdx = 1;
-      cameraSim.shutterIdx = 4;
-      cameraSim.isoIdx = 1;
-      cameraSim.focusPlane = 1;
+      cameraSim.apertureIdx = 1; cameraSim.shutterIdx = 4; cameraSim.isoIdx = 1; cameraSim.focusPlane = 1;
       document.getElementById('input-aperture').value = 1;
       document.getElementById('input-shutter').value = 4;
       document.getElementById('input-iso').value = 1;
@@ -1918,18 +2269,12 @@
     function handleHalfPressShutter() {
       playAfBeepSound();
       const reticle = document.getElementById('sim-af-reticle');
-      if (reticle) {
-        reticle.classList.add('border-emerald-400', 'bg-emerald-400/20');
-      }
+      if (reticle) reticle.classList.add('border-emerald-400', 'bg-emerald-400/20');
     }
 
     function releaseHalfPressShutter() {
       const reticle = document.getElementById('sim-af-reticle');
-      if (reticle) {
-        setTimeout(() => {
-          reticle.classList.remove('border-emerald-400', 'bg-emerald-400/20');
-        }, 200);
-      }
+      if (reticle) setTimeout(() => reticle.classList.remove('border-emerald-400', 'bg-emerald-400/20'), 200);
     }
 
     function handleFullCapture() {
@@ -1942,9 +2287,12 @@
       markStepComplete(1);
     }
 
+    /* -------------------------------------------------------------
+       AUDIO SYNTHESIZER
+    ------------------------------------------------------------- */
     let audioCtx = null;
     function playDialClick() {
-      if (!state.audioEnabled) return;
+      if (!window.appState?.audioEnabled) return;
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) audioCtx = new AudioContext();
@@ -1963,7 +2311,7 @@
     }
 
     function playAfBeepSound() {
-      if (!state.audioEnabled) return;
+      if (!window.appState?.audioEnabled) return;
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) audioCtx = new AudioContext();
@@ -1982,7 +2330,7 @@
     }
 
     function playShutterSound() {
-      if (!state.audioEnabled) return;
+      if (!window.appState?.audioEnabled) return;
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) audioCtx = new AudioContext();
@@ -2002,9 +2350,9 @@
     }
 
     function toggleAudioFx() {
-      state.audioEnabled = !state.audioEnabled;
+      window.appState.audioEnabled = !window.appState.audioEnabled;
       const icon = document.getElementById('audio-icon');
-      if (state.audioEnabled) {
+      if (window.appState.audioEnabled) {
         icon.className = 'fa-solid fa-volume-high text-xs text-brand-gold';
         playShutterSound();
       } else {
@@ -2017,7 +2365,6 @@
       if (grid) grid.classList.toggle('opacity-0');
     }
 
-    /* MINI QUIZ & FOCUS EXERCISE */
     function checkQuiz(qNum, choice) {
       const fb = document.getElementById('quiz-feedback-1');
       fb.classList.remove('hidden');
@@ -2067,7 +2414,6 @@
       }
     }
 
-    /* RULE OF THIRD ANIMATIONS */
     function animateRotDemo() {
       playShutterSound();
       const subject = document.getElementById('rot-moving-subject');
@@ -2093,23 +2439,24 @@
       btn.innerText = 'Misi Rule of Third Selesai ✓';
       btn.className = 'w-full py-2 bg-slate-800 text-emerald-400 font-bold rounded transition-colors border border-emerald-500';
       markStepComplete(3);
-      if (!state.completedMissions.includes(1)) {
-        state.completedMissions.push(1);
-        updateGlobalProgress();
+      if (!window.appState.completedMissions.includes(1)) {
+        window.appState.completedMissions.push(1);
+        window.updateGlobalProgress();
+        if (window.syncProgressToCloud) window.syncProgressToCloud();
       }
     }
 
-    /* COMPOSITION MODALS DATA */
+    /* MODAL DATA */
     const compData = {
       simetris: {
         title: 'Komposisi Simetris',
-        desc: 'Keseimbangan formal antara sisi kiri dan kanan atau atas dan bawah objek, memberi kesan kokoh dan berwibawa.',
+        desc: 'Keseimbangan formal antara sisi kiri dan kanan objek, memberi kesan kokoh.',
         img: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=700&q=80',
         action: 'Posisikan kamera tepat di sumbu tengah gerbang atau lorong simetris di SMKN 1 Surabaya.'
       },
       framing: {
         title: 'Framing',
-        desc: 'Membingkai objek utama dengan elemen visual di sekitarnya sehingga perhatian mata audiens terarah.',
+        desc: 'Membingkai objek utama dengan elemen visual di sekitarnya.',
         img: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=700&q=80',
         action: 'Gunakan celah pagar atau lengkungan dinding untuk membingkai aktivitas teman.'
       },
@@ -2121,37 +2468,37 @@
       },
       fillframe: {
         title: 'Fill the Frame',
-        desc: 'Memenuhi seluruh bingkai foto dengan objek utama tanpa menyisakan ruang kosong yang mengganggu.',
+        desc: 'Memenuhi seluruh bingkai foto dengan objek utama.',
         img: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=700&q=80',
         action: 'Mendekatlah ke objek (close-up) hingga seluruh frame terisi tekstur objek.'
       },
       frameinframe: {
         title: 'Frame in Frame',
-        desc: 'Memanfaatkan bingkai alami seperti pintu kelas, jendela, spion, atau dedaunan.',
+        desc: 'Memanfaatkan bingkai alami seperti pintu kelas, jendela, atau dedaunan.',
         img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=700&q=80',
         action: 'Potret teman dari dalam kelas melalui kusen jendela yang terbuka.'
       },
       leadinglines: {
         title: 'Leading Lines',
-        desc: 'Garis nyata atau imajiner (koridor, jalan, pagar) yang menuntun mata penonton menuju objek utama.',
+        desc: 'Garis nyata atau imajiner yang menuntun mata penonton menuju objek utama.',
         img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=700&q=80',
         action: 'Manfaatkan garis ubin lorong sekolah dari sudut rendah (low angle).'
       },
       negativespace: {
         title: 'Negative Space',
-        desc: 'Menyediakan porsi ruang kosong yang luas di sekitar objek untuk kesan minimalis dan elegan.',
+        desc: 'Menyediakan porsi ruang kosong luas di sekitar objek.',
         img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=700&q=80',
         action: 'Potret objek di depan dinding polos dengan ruang kosong mendominasi frame.'
       },
       goldenshape: {
         title: 'Golden Shape',
-        desc: 'Penyusunan elemen visual membentuk pola geometris alami yang menciptakan harmoni visual dinamis.',
+        desc: 'Pola geometris alami yang menciptakan harmoni visual dinamis.',
         img: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=700&q=80',
         action: 'Susun produk atau model dengan pose membentuk segitiga stabil.'
       },
       goldenratio: {
         title: 'Golden Ratio (1:1.618)',
-        desc: 'Proporsi spiral Fibonacci yang memandu aliran mata pemirsa secara organik dan elegan.',
+        desc: 'Proporsi spiral Fibonacci yang memandu pandangan mata secara organik.',
         img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=700&q=80',
         action: 'Gunakan kurva tangga melingkar untuk memandu alur pandang.'
       }
@@ -2167,16 +2514,13 @@
       document.getElementById('modal-comp').classList.remove('hidden');
     }
 
-    function closeCompModal() {
-      document.getElementById('modal-comp').classList.add('hidden');
-    }
+    function closeCompModal() { document.getElementById('modal-comp').classList.add('hidden'); }
 
-    /* TECHNIQUE MODAL LABS */
     const techData = {
       dof: {
         title: 'Depth of Field (DoF)',
-        desc: 'Pengaturan kedalaman ruang fokus untuk memisahkan objek utama dari latar belakang bokeh.',
-        task: 'Gunakan bukaan f/1.8 atau f/2.8, potret produk tumbler di atas meja dengan latar ruang kelas yang blur.',
+        desc: 'Kedalaman ruang fokus untuk memisahkan objek utama dari latar belakang bokeh.',
+        task: 'Gunakan bukaan f/1.8 atau f/2.8, potret produk tumbler di atas meja dengan latar blur.',
         setupLab: function(container) {
           container.innerHTML = `
             <div class="aspect-video bg-black rounded-lg overflow-hidden relative flex items-center justify-center">
@@ -2264,7 +2608,7 @@
       },
       raw: {
         title: 'RAW Processing',
-        desc: 'Format file mentah tanpa kompresi JPEG kamera sehingga tonalnya leluasa diolah di Adobe Lightroom.',
+        desc: 'Format mentah tanpa kompresi sehingga leluasa diolah di Adobe Lightroom.',
         task: 'Atur kualitas foto kamera ke format RAW, lalu evaluasi highlight dan shadow-nya.',
         setupLab: function(container) {
           container.innerHTML = `
@@ -2292,9 +2636,7 @@
       document.getElementById('modal-technique').classList.remove('hidden');
     }
 
-    function closeTechniqueModal() {
-      document.getElementById('modal-technique').classList.add('hidden');
-    }
+    function closeTechniqueModal() { document.getElementById('modal-technique').classList.add('hidden'); }
 
     function updateDofLab(val) {
       const bg = document.getElementById('lab-dof-bg');
@@ -2336,15 +2678,11 @@
       const canvas = document.getElementById('bulb-paint-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      ctx.strokeStyle = '#F59E0B';
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#F59E0B';
+      ctx.strokeStyle = '#F59E0B'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+      ctx.shadowBlur = 10; ctx.shadowColor = '#F59E0B';
 
       canvas.onmousedown = (e) => {
-        isDrawingBulb = true;
-        ctx.beginPath();
+        isDrawingBulb = true; ctx.beginPath();
         const r = canvas.getBoundingClientRect();
         ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
       };
@@ -2359,10 +2697,7 @@
 
     function clearBulbCanvas() {
       const canvas = document.getElementById('bulb-paint-canvas');
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
+      if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     }
 
     function togglePanningDemo() {
@@ -2377,11 +2712,8 @@
     function setSiluetLab(mode) {
       playDialClick();
       const person = document.getElementById('lab-siluet-person');
-      if (mode === 'sky') {
-        person.className = 'relative z-10 text-black';
-      } else {
-        person.className = 'relative z-10 text-amber-200 brightness-150';
-      }
+      if (mode === 'sky') person.className = 'relative z-10 text-black';
+      else person.className = 'relative z-10 text-amber-200 brightness-150';
     }
 
     function toggleRawDemo(isRaw) {
@@ -2403,7 +2735,7 @@
     const genreData = {
       creative: {
         title: 'Creative (Fiksi)',
-        desc: 'Ranah fotografi dengan rekayasa artistik dan konsep visual terencana untuk komersial maupun seni rupa.',
+        desc: 'Rekayasa artistik dan konsep visual terencana untuk komersial maupun seni rupa.',
         categories: ['Food and Decor', 'Commercial', 'Product', 'Advertising', 'Fine Art', 'Still Life', 'Fashion', 'Catalogue', 'Studio', 'Creative Stock']
       },
       editorial: {
@@ -2429,11 +2761,8 @@
 
       ['creative', 'editorial', 'retail', 'personal'].forEach(c => {
         const btn = document.getElementById(`genre-tab-${c}`);
-        if (c === cat) {
-          btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-brand-gold text-slate-950';
-        } else {
-          btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-brand-card text-slate-300 border border-brand-border';
-        }
+        if (c === cat) btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-brand-gold text-slate-950';
+        else btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-brand-card text-slate-300 border border-brand-border';
       });
 
       const container = document.getElementById('genre-content-container');
@@ -2453,7 +2782,6 @@
       `;
     }
 
-    /* EVALUASI & ASISTEN CHECKLIST */
     function updateAssistantProgress() {
       const chks = document.querySelectorAll('.chk-assist:checked');
       const counter = document.getElementById('assist-step-counter');
@@ -2493,46 +2821,34 @@
       calculateEvaluation();
     }
 
-    function filterGallery(category) {
-      const items = document.querySelectorAll('.gallery-item');
-      const btns = document.querySelectorAll('.gallery-filter-btn');
-      btns.forEach(b => {
-        b.className = 'gallery-filter-btn px-3 py-1 rounded bg-brand-card text-slate-300 border border-brand-border';
-      });
-      event.target.className = 'gallery-filter-btn px-3 py-1 rounded bg-brand-gold text-slate-950 font-bold';
-
-      items.forEach(item => {
-        if (category === 'all' || item.classList.contains(category)) {
-          item.classList.remove('hidden');
-        } else {
-          item.classList.add('hidden');
-        }
-      });
-    }
-
-    function openSubmitFormModal() { document.getElementById('modal-submit').classList.remove('hidden'); }
-    function closeSubmitModal() { document.getElementById('modal-submit').classList.add('hidden'); }
-    function mockDriveOpen() { alertBox('Membuka Google Drive Pengumpulan Foto SMKN 1 Surabaya...'); }
-
     /* REFLEKSI HANDLERS */
     let selectedScale = 2;
     function selectReflectScale(idx) {
       selectedScale = idx;
       for (let i = 1; i <= 4; i++) {
         const btn = document.getElementById(`btn-scale-${i}`);
-        if (i === idx) {
-          btn.className = 'p-2 rounded-xl bg-slate-900 border border-brand-gold bg-brand-gold/15 text-center';
-        } else {
-          btn.className = 'p-2 rounded-xl bg-slate-900 border border-slate-700 text-center';
-        }
+        if (i === idx) btn.className = 'p-2 rounded-xl bg-slate-900 border border-brand-gold bg-brand-gold/15 text-center';
+        else btn.className = 'p-2 rounded-xl bg-slate-900 border border-slate-700 text-center';
       }
     }
 
     function saveReflection() {
       playShutterSound();
+      const q1 = document.getElementById('ref-q1').value.trim();
+      const q2 = document.getElementById('ref-q2').value.trim();
+      const q3 = document.getElementById('ref-q3').value.trim();
+      const q4 = document.getElementById('ref-q4').value.trim();
+      const q5 = document.getElementById('ref-q5').value.trim();
+
+      const reflectionData = { q1, q2, q3, q4, q5, scale: selectedScale };
+
+      if (window.saveReflectionToCloud) {
+        window.saveReflectionToCloud(reflectionData);
+      }
+
       const a = document.getElementById('reflection-save-alert');
       a.classList.remove('hidden');
-      a.innerText = 'Refleksi berhasil disimpan! Keterampilan fotografimu tercatat.';
+      a.innerText = 'Refleksi berhasil disimpan ke akun cloud Anda!';
       markStepComplete(8);
       setTimeout(() => a.classList.add('hidden'), 4000);
     }
@@ -2543,8 +2859,11 @@
       const q3 = document.getElementById('ref-q3').value || '-';
       const q4 = document.getElementById('ref-q4').value || '-';
       const q5 = document.getElementById('ref-q5').value || '-';
+      const profile = window.appState?.studentProfile;
 
       const summary = `=== REFLEKSI FOTOGRAFI DASAR KELAS XI DKV SMKN 1 SURABAYA ===\n` +
+        `Nama Siswa: ${profile ? profile.name : 'Siswa'}\n` +
+        `Kelas: ${profile ? profile.studentClass : 'XI DKV'}\n` +
         `1. Paling Mudah: ${q1}\n` +
         `2. Paling Menantang: ${q2}\n` +
         `3. Kesalahan Awal: ${q3}\n` +
@@ -2562,7 +2881,7 @@
 
       const a = document.getElementById('reflection-save-alert');
       a.classList.remove('hidden');
-      a.innerText = 'Teks refleksi berhasil disalin ke clipboard! Siap ditempel ke Google Classroom.';
+      a.innerText = 'Teks refleksi berhasil disalin ke clipboard!';
       setTimeout(() => a.classList.add('hidden'), 4000);
     }
 
@@ -2583,7 +2902,7 @@
       const chatBox = document.getElementById('chat-stream-box');
       const userDiv = document.createElement('div');
       userDiv.className = 'bg-brand-card p-2.5 rounded-xl border border-brand-border text-slate-200 text-right';
-      userDiv.innerHTML = `<span class="text-brand-cyan block text-[9px] uppercase font-mono">Kamu (Siswa)</span>${query}`;
+      userDiv.innerHTML = `<span class="text-brand-cyan block text-[9px] uppercase font-mono">${window.appState?.studentProfile?.name || 'Kamu (Siswa)'}</span>${escapeHtml(query)}`;
       chatBox.appendChild(userDiv);
       input.value = '';
 
@@ -2604,7 +2923,7 @@
 
     function finishCelebration() {
       playShutterSound();
-      alertBox('Selamat! Anda telah menyelesaikan media Asisten Digital Fotografi SMKN 1 Surabaya.');
+      alertBox('Selamat! Anda telah menyelesaikan seluruh rangkaian Asisten Digital Fotografi.');
     }
 
     function alertBox(msg) {
@@ -2620,10 +2939,16 @@
 
     /* ON WINDOW LOAD */
     window.onload = function () {
-      updateGlobalProgress();
+      renderStudentIdentityUI();
       switchGenreCategory('creative');
       selectReflectScale(2);
       updateCameraSimulator();
+      renderRealStudentGallery();
+
+      // Check if user has not logged in yet, prompt login modal smoothly
+      if (!window.appState?.studentProfile) {
+        setTimeout(openLoginModal, 800);
+      }
     };
   </script>
 </body>
